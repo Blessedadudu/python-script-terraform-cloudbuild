@@ -1,3 +1,7 @@
+provider "google" {
+  project = "singular-agent-452813-n6"
+  region  = "europe-west1"
+}
 resource "google_compute_instance" "vm" {
   name         = "docker-vm-22"
   machine_type = "e2-micro"
@@ -5,7 +9,7 @@ resource "google_compute_instance" "vm" {
 
   boot_disk {
     initialize_params {
-      image = "debian-cloud/debian-11"
+     image = "projects/cos-cloud/global/images/family/cos-stable"
     }
   }
 
