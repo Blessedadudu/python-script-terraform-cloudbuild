@@ -10,7 +10,7 @@ resource "google_compute_instance" "vm" {
 
   boot_disk {
     initialize_params {
-      image = "cos-stable"
+     image = "projects/cos-cloud/global/images/family/cos-stable"
     }
   }
 
