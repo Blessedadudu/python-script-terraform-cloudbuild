@@ -4,7 +4,7 @@ provider "google" {
 }
 
 resource "google_compute_instance" "vm" {
-  name         = "docker-vm-44"
+  name         = "docker-vm-33"
   machine_type = "e2-micro"
   zone         = "europe-west1-c"
 
