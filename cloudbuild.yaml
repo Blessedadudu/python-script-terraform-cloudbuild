@@ -1,8 +1,4 @@
 steps:
-  # Authenticate Docker with GCR
-  - name: "gcr.io/cloud-builders/docker"
-    args: ["login", "-u", "oauth2accesstoken", "-p", "$(gcloud auth print-access-token)", "https://gcr.io"]
-
   # Build the Docker image
   - name: "gcr.io/cloud-builders/docker"
     args: ["build", "-t", "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd", "."]
@@ -24,5 +20,3 @@ steps:
 images:
   - "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
 
-options:
-  logging: CLOUD_LOGGING_ONLY
