@@ -1,25 +1,28 @@
 steps:
   # Authenticate Docker with GCR
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['login', '-u', 'oauth2accesstoken', '-p', '$(gcloud auth print-access-token)', 'https://gcr.io']
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["login", "-u", "oauth2accesstoken", "-p", "$(gcloud auth print-access-token)", "https://gcr.io"]
 
   # Build the Docker image
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd', '.']
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["build", "-t", "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd", "."]
 
   # Push the Docker image to GCR
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd']
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"]
 
   # Run Terraform to update VM
-  - name: 'hashicorp/terraform:latest'
-    entrypoint: 'sh'
+  - name: "hashicorp/terraform:latest"
+    entrypoint: "sh"
     args:
-      - '-c'
+      - "-c"
       - |
         terraform init
         terraform apply -auto-approve
-    dir: 'terraform'
+    dir: "terraform"
 
 images:
-  - 'gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd'
+  - "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
