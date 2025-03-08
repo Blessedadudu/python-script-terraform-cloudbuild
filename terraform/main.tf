@@ -19,6 +19,11 @@ resource "google_compute_instance" "vm" {
     access_config {}
   }
 
+  service_account {
+    email  = "477570371233-compute@developer.gserviceaccount.com"
+    scopes = ["cloud-platform"]
+  }
+
   metadata = {
     gce-container-declaration = <<EOT
 spec:
