@@ -2,8 +2,9 @@ provider "google" {
   project = "singular-agent-452813-n6"
   region  = "europe-west1"
 }
+
 resource "google_compute_instance" "vm" {
-  name         = "docker-vm-22"
+  name         = "docker-vm-44"
   machine_type = "e2-micro"
   zone         = "europe-west1-c"
 
@@ -18,17 +19,20 @@ resource "google_compute_instance" "vm" {
     access_config {}
   }
 
-  metadata_startup_script = <<-EOT
-    #!/bin/bash
-    echo "Startup script running..."
-    docker pull gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd
-    docker stop my-container || true
-    docker rm my-container || true
-    docker run -d --name my-container gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd
-  EOT
+  service_account {
+    email  = "477570371233-compute@developer.gserviceaccount.com"
+    scopes = ["cloud-platform"]
+  }
 
-  # Prevents Terraform from destroying the VM
-  lifecycle {
-    ignore_changes = [metadata_startup_script]
+  metadata = {
+    gce-container-declaration = <<EOT
+spec:
+  containers:
+    - name: dockerized-python-app
+      image: gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd
+      stdin: false
+      tty: false
+  restartPolicy: Always
+EOT
   }
 }
