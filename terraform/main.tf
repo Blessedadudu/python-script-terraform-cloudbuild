@@ -4,7 +4,7 @@ provider "google" {
 }
 
 resource "google_compute_instance" "vm" {
-  name         = "docker-vm-11"
+  name         = "docker-vm-22"
   machine_type = "e2-micro"
   zone         = "europe-west1-c"
 
