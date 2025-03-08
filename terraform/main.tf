@@ -1,12 +1,12 @@
 provider "google" {
   project = "singular-agent-452813-n6"
-  region  = "europe-west3"
+  region  = "europe-west1"
 }
 
 resource "google_compute_instance" "vm" {
   name         = "docker-vm-11"
   machine_type = "e2-micro"
-  zone         = "europe-west3-c"
+  zone         = "europe-west1-c"
 
   boot_disk {
     initialize_params {
