@@ -7,7 +7,22 @@ steps:
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"]
 
-  # Run Terraform to update VM
+  # Check if the VM exists
+  - name: "gcr.io/cloud-builders/gcloud"
+    id: "check-vm"
+    entrypoint: "sh"
+    args:
+      - "-c"
+      - |
+        if gcloud compute instances describe docker-vm-22 --zone=europe-west1-c > /dev/null 2>&1; then
+          echo "VM exists, updating container..."
+          exit 0
+        else
+          echo "VM does not exist, creating with Terraform..."
+          exit 1
+        fi
+
+  # Run Terraform only if VM doesn't exist
   - name: "hashicorp/terraform:latest"
     entrypoint: "sh"
     args:
@@ -16,6 +31,21 @@ steps:
         terraform init
         terraform apply -auto-approve
     dir: "terraform"
+    allowFailure: true  # Allow this step to fail if VM already exists
+
+  # SSH into VM and restart the container
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      - "compute"
+      - "ssh"
+      - "docker-vm-33"
+      - "--zone=europe-west1-c"
+      - "--command"
+      - |
+        docker pull gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd
+        docker stop my-container || true
+        docker rm my-container || true
+        docker run -d --name my-container gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd
 
 images:
   - "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
