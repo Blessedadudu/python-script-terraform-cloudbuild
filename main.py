@@ -1,14 +1,20 @@
 import logging
-import time
-import google.cloud.logging
-import os
+import threading
+from new.welcome import print_welcome
+from new.timeout import main as timeout_main
+
+logging.basicConfig(level=logging.INFO)
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    if int(os.environ.get("PRODUCTION", 0)) == 1:
-        logging_client = google.cloud.logging.Client()
-        logging_client.setup_logging()
+    logging.info("Starting all scripts...")
 
-    while True:
-        logging.info("Check if allowed to change! Sleeping for 5 seconds")
-        time.sleep(5)
+    # Run welcome.py and timeout.py in separate threads
+    welcome_thread = threading.Thread(target=print_welcome, daemon=True)
+    timeout_thread = threading.Thread(target=timeout_main, daemon=True)
+
+    welcome_thread.start()
+    timeout_thread.start()
+
+    # Keep the main thread alive
+    welcome_thread.join()
+    timeout_thread.join()
