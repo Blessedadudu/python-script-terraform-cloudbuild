@@ -57,8 +57,6 @@ steps:
 
 availableSecrets:
   secretManager:
-  - versionName: projects/singular-agent-452813-n6/secrets/WELCOME_MESSAGE/versions/latest
-    env: "WELCOME_MESSAGE"
   - versionName: projects/singular-agent-452813-n6/secrets/SLEEP_TIME/versions/latest
     env: "SLEEP_TIME"
   - versionName: projects/singular-agent-452813-n6/secrets/PRODUCTION/versions/latest
