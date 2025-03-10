@@ -25,7 +25,7 @@ steps:
     args:
       - "-c"
       - |
-        if gcloud compute instances describe docker-vm-112 --zone=europe-west1-c > /dev/null 2>&1; then
+        if gcloud compute instances describe docker-vm-1111 --zone=europe-west1-c > /dev/null 2>&1; then
           echo "VM exists"
           exit 0
         else
@@ -51,7 +51,7 @@ steps:
       - "compute"
       - "instances"
       - "update-container"
-      - "docker-vm-112"
+      - "docker-vm-1111"
       - "--zone=europe-west1-c"
       - "--container-image=gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
 
