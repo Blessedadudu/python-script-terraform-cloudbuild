@@ -13,13 +13,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Authenticate with Google Cloud
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}  # Store your GCP service account JSON key in GitHub Secrets
-
-      - name: Set up Google Cloud SDK
+      - name: Authenticate & Set Up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: singular-agent-452813-n6  # Ensure project is set
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Verify Google Cloud Authentication
+        run: |
+          gcloud config list
+          gcloud auth list
 
       - name: Run Cloud Build
         run: |
