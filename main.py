@@ -10,5 +10,5 @@ if __name__ == "__main__":
         logging_client.setup_logging()
 
     while True:
-        logging.info("Sleeping for 5 seconds")
+        logging.info("Welcome to changes! Sleeping for 5 seconds")
         time.sleep(5)
