@@ -1,5 +1,5 @@
 steps:
-  # Build the Docker image with environment variables from GitHub Actions
+  # Build the Docker image with environment variables from Cloud Build Trigger
   - name: "gcr.io/cloud-builders/docker"
     args:
       - "build"
@@ -55,9 +55,9 @@ steps:
       - "--container-image=gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
 
 substitutions:
-  _ENV_WELCOME_MESSAGE: ""
-  _ENV_SLEEP_TIME: ""
-  _ENV_PRODUCTION: ""
+  _ENV_WELCOME_MESSAGE: "${_ENV_WELCOME_MESSAGE}"
+  _ENV_SLEEP_TIME: "${_ENV_SLEEP_TIME}"
+  _ENV_PRODUCTION: "${_ENV_PRODUCTION}"
 
 images:
   - "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"

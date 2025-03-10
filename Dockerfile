@@ -12,4 +12,13 @@ COPY . .
 # Set PYTHONPATH to ensure imports work
 ENV PYTHONPATH=/app
 
+# Set environment variables (these will be overridden by build args)
+ARG WELCOME_MESSAGE
+ARG SLEEP_TIME
+ARG PRODUCTION
+
+ENV WELCOME_MESSAGE=${WELCOME_MESSAGE}
+ENV SLEEP_TIME=${SLEEP_TIME}
+ENV PRODUCTION=${PRODUCTION}
+
 CMD ["python3", "main.py"]
