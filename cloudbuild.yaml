@@ -40,7 +40,7 @@ steps:
       - "compute"
       - "instances"
       - "update-container"
-      - "docker-vm-22"
+      - "docker-vm-55"
       - "--zone=europe-west1-c"
       - "--container-image=gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
 
