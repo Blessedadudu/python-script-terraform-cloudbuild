@@ -1,17 +1,16 @@
 steps:
-  # Build the Docker image using secrets from Secret Manager
+  # Build the Docker image with environment variables from Cloud Build Trigger
   - name: "gcr.io/cloud-builders/docker"
-    secretEnv: ['WELCOME_MESSAGE', 'SLEEP_TIME', 'PRODUCTION']
     args:
       - "build"
       - "-t"
       - "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
       - "--build-arg"
-      - "WELCOME_MESSAGE=$$WELCOME_MESSAGE"
+      - "WELCOME_MESSAGE=${_ENV_WELCOME_MESSAGE}"
       - "--build-arg"
-      - "SLEEP_TIME=$$SLEEP_TIME"
+      - "SLEEP_TIME=${_ENV_SLEEP_TIME}"
       - "--build-arg"
-      - "PRODUCTION=$$PRODUCTION"
+      - "PRODUCTION=${_ENV_PRODUCTION}"
       - "."
 
   # Push the Docker image to GCR
@@ -25,7 +24,7 @@ steps:
     args:
       - "-c"
       - |
-        if gcloud compute instances describe docker-vm-1111 --zone=europe-west1-c > /dev/null 2>&1; then
+        if gcloud compute instances describe docker-vm-112 --zone=europe-west1-c > /dev/null 2>&1; then
           echo "VM exists"
           exit 0
         else
@@ -51,18 +50,14 @@ steps:
       - "compute"
       - "instances"
       - "update-container"
-      - "docker-vm-1111"
+      - "docker-vm-112"
       - "--zone=europe-west1-c"
       - "--container-image=gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
 
-availableSecrets:
-  secretManager:
-  - versionName: projects/477570371233/secrets/WELCOME_MESSAGE/versions/latest
-    env: "WELCOME_MESSAGE"
-  - versionName: projects/477570371233/secrets/SLEEP_TIME/versions/latest
-    env: "SLEEP_TIME"
-  - versionName: projects/477570371233/secrets/PRODUCTION/versions/latest
-    env: "PRODUCTION"
+substitutions:
+  _ENV_WELCOME_MESSAGE: "${_ENV_WELCOME_MESSAGE}"
+  _ENV_SLEEP_TIME: "${_ENV_SLEEP_TIME}"
+  _ENV_PRODUCTION: "${_ENV_PRODUCTION}"
 
 images:
   - "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
