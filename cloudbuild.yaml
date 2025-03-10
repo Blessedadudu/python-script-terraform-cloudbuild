@@ -7,7 +7,22 @@ steps:
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"]
 
-  # Run Terraform to update VM
+  # Check if the VM exists
+  - name: "gcr.io/cloud-builders/gcloud"
+    id: "check-vm"
+    entrypoint: "sh"
+    args:
+      - "-c"
+      - |
+        if gcloud compute instances describe docker-vm-22 --zone=europe-west1-c > /dev/null 2>&1; then
+          echo "VM exists"
+          exit 0
+        else
+          echo "VM does not exist"
+          exit 1
+        fi
+
+  # Run Terraform only if VM doesn't exist
   - name: "hashicorp/terraform:latest"
     entrypoint: "sh"
     args:
@@ -16,6 +31,17 @@ steps:
         terraform init
         terraform apply -auto-approve
     dir: "terraform"
+    allowFailure: true 
+
+  # Update the VM container to use the new image
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      - "compute"
+      - "instances"
+      - "update-container"
+      - "docker-vm-22"
+      - "--zone=europe-west1-c"
+      - "--container-image=gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
 
 images:
   - "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"

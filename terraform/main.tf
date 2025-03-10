@@ -3,14 +3,18 @@ provider "google" {
   region  = "europe-west1"
 }
 
+variable "vm_name" {
+  default = "docker-vm-22"
+}
+
 resource "google_compute_instance" "vm" {
-  name         = "docker-vm-33"
+  name         = var.vm_name
   machine_type = "e2-micro"
   zone         = "europe-west1-c"
 
   boot_disk {
     initialize_params {
-     image = "projects/cos-cloud/global/images/family/cos-stable"
+      image = "projects/cos-cloud/global/images/family/cos-stable"
     }
   }
 
@@ -22,6 +26,11 @@ resource "google_compute_instance" "vm" {
   service_account {
     email  = "477570371233-compute@developer.gserviceaccount.com"
     scopes = ["cloud-platform"]
+  }
+
+  scheduling {
+    automatic_restart   = true
+    on_host_maintenance = "MIGRATE"
   }
 
   metadata = {
