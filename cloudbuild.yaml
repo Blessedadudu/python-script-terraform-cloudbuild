@@ -1,29 +1,17 @@
 steps:
-  # Retrieve secrets from Secret Manager and store them in environment variables
-  - name: "gcr.io/cloud-builders/gcloud"
-    id: "fetch-secrets"
-    entrypoint: "sh"
+  # Build the Docker image and inject secrets as environment variables
+  - name: "gcr.io/cloud-builders/docker"
+    entrypoint: "bash"
     args:
       - "-c"
       - |
-        echo "Fetching secrets..."
-        echo "$(gcloud secrets versions access latest --secret=WELCOME_MESSAGE)" > /workspace/WELCOME_MESSAGE
-        echo "$(gcloud secrets versions access latest --secret=SLEEP_TIME)" > /workspace/SLEEP_TIME
-        echo "$(gcloud secrets versions access latest --secret=PRODUCTION)" > /workspace/PRODUCTION
+        docker build \
+          --build-arg WELCOME_MESSAGE="$WELCOME_MESSAGE" \
+          --build-arg SLEEP_TIME="$SLEEP_TIME" \
+          --build-arg PRODUCTION="$PRODUCTION" \
+          -t gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd .
 
-  # Build the Docker image, injecting secrets as build arguments
-  - name: "gcr.io/cloud-builders/docker"
-    args:
-      - "build"
-      - "-t"
-      - "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
-      - "--build-arg"
-      - "WELCOME_MESSAGE=$(cat /workspace/WELCOME_MESSAGE)"
-      - "--build-arg"
-      - "SLEEP_TIME=$(cat /workspace/SLEEP_TIME)"
-      - "--build-arg"
-      - "PRODUCTION=$(cat /workspace/PRODUCTION)"
-      - "."
+    secretEnv: ['WELCOME_MESSAGE', 'SLEEP_TIME', 'PRODUCTION']
 
   # Push the Docker image to GCR
   - name: "gcr.io/cloud-builders/docker"
@@ -65,6 +53,15 @@ steps:
       - "docker-vm-112"
       - "--zone=europe-west1-c"
       - "--container-image=gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/singular-agent-452813-n6/secrets/WELCOME_MESSAGE/versions/latest
+      env: "WELCOME_MESSAGE"
+    - versionName: projects/singular-agent-452813-n6/secrets/SLEEP_TIME/versions/latest
+      env: "SLEEP_TIME"
+    - versionName: projects/singular-agent-452813-n6/secrets/PRODUCTION/versions/latest
+      env: "PRODUCTION"
 
 images:
   - "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
