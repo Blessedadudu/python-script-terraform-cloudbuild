@@ -14,7 +14,7 @@ steps:
     args:
       - "-c"
       - |
-        if gcloud compute instances describe docker-vm-22 --zone=europe-west1-c > /dev/null 2>&1; then
+        if gcloud compute instances describe docker-vm-66 --zone=europe-west1-c > /dev/null 2>&1; then
           echo "VM exists"
           exit 0
         else
@@ -34,15 +34,18 @@ steps:
     dir: "terraform"
     allowFailure: true
 
-  # Update the VM container to use the new image
+  # Restart the container on the VM (instead of update-container)
   - name: "gcr.io/cloud-builders/gcloud"
+    id: "restart-container"
+    entrypoint: "bash"
     args:
-      - "compute"
-      - "instances"
-      - "update-container"
-      - "docker-vm-55"
-      - "--zone=europe-west1-c"
-      - "--container-image=gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
+      - "-c"
+      - |
+        gcloud compute ssh docker-vm-66 --zone=europe-west1-c --command="
+          sudo docker stop \$(sudo docker ps -q --filter ancestor=gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd) || true;
+          sudo docker pull gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd;
+          sudo docker run --env-file /etc/docker.env -d gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd;
+        "
 
 images:
   - "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
