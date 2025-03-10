@@ -57,11 +57,11 @@ steps:
 
 availableSecrets:
   secretManager:
-  - versionName: projects/singular-agent-452813-n6/secrets/WELCOME_MESSAGE/versions/latest
+  - versionName: projects/477570371233/secrets/WELCOME_MESSAGE/versions/latest
     env: "WELCOME_MESSAGE"
-  - versionName: projects/singular-agent-452813-n6/secrets/SLEEP_TIME/versions/latest
+  - versionName: projects/477570371233/secrets/SLEEP_TIME/versions/latest
     env: "SLEEP_TIME"
-  - versionName: projects/singular-agent-452813-n6/secrets/PRODUCTION/versions/latest
+  - versionName: projects/477570371233/secrets/PRODUCTION/versions/latest
     env: "PRODUCTION"
 
 images:
