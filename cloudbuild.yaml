@@ -1,17 +1,18 @@
 steps:
-  # Build the Docker image and inject secrets as environment variables
+  # Build the Docker image using secrets from Secret Manager
   - name: "gcr.io/cloud-builders/docker"
-    entrypoint: "bash"
-    args:
-      - "-c"
-      - |
-        docker build \
-          --build-arg WELCOME_MESSAGE="$WELCOME_MESSAGE" \
-          --build-arg SLEEP_TIME="$SLEEP_TIME" \
-          --build-arg PRODUCTION="$PRODUCTION" \
-          -t gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd .
-
     secretEnv: ['WELCOME_MESSAGE', 'SLEEP_TIME', 'PRODUCTION']
+    args:
+      - "build"
+      - "-t"
+      - "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
+      - "--build-arg"
+      - "WELCOME_MESSAGE=$$WELCOME_MESSAGE"
+      - "--build-arg"
+      - "SLEEP_TIME=$$SLEEP_TIME"
+      - "--build-arg"
+      - "PRODUCTION=$$PRODUCTION"
+      - "."
 
   # Push the Docker image to GCR
   - name: "gcr.io/cloud-builders/docker"
@@ -56,12 +57,12 @@ steps:
 
 availableSecrets:
   secretManager:
-    - versionName: projects/singular-agent-452813-n6/secrets/WELCOME_MESSAGE/versions/latest
-      env: "WELCOME_MESSAGE"
-    - versionName: projects/singular-agent-452813-n6/secrets/SLEEP_TIME/versions/latest
-      env: "SLEEP_TIME"
-    - versionName: projects/singular-agent-452813-n6/secrets/PRODUCTION/versions/latest
-      env: "PRODUCTION"
+  - versionName: projects/singular-agent-452813-n6/secrets/WELCOME_MESSAGE/versions/latest
+    env: "WELCOME_MESSAGE"
+  - versionName: projects/singular-agent-452813-n6/secrets/SLEEP_TIME/versions/latest
+    env: "SLEEP_TIME"
+  - versionName: projects/singular-agent-452813-n6/secrets/PRODUCTION/versions/latest
+    env: "PRODUCTION"
 
 images:
   - "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
