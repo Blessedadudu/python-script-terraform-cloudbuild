@@ -4,7 +4,7 @@ provider "google" {
 }
 
 variable "vm_name" {
-  default = "docker-vm-22"
+  default = "docker-vm-112"
 }
 
 resource "google_compute_instance" "vm" {

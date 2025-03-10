@@ -1,7 +1,17 @@
 steps:
-  # Build the Docker image
+  # Build the Docker image with environment variables from GitHub Actions
   - name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd", "."]
+    args:
+      - "build"
+      - "-t"
+      - "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
+      - "--build-arg"
+      - "WELCOME_MESSAGE=${_ENV_WELCOME_MESSAGE}"
+      - "--build-arg"
+      - "SLEEP_TIME=${_ENV_SLEEP_TIME}"
+      - "--build-arg"
+      - "PRODUCTION=${_ENV_PRODUCTION}"
+      - "."
 
   # Push the Docker image to GCR
   - name: "gcr.io/cloud-builders/docker"
@@ -14,7 +24,7 @@ steps:
     args:
       - "-c"
       - |
-        if gcloud compute instances describe docker-vm-22 --zone=europe-west1-c > /dev/null 2>&1; then
+        if gcloud compute instances describe docker-vm-112 --zone=europe-west1-c > /dev/null 2>&1; then
           echo "VM exists"
           exit 0
         else
@@ -40,9 +50,14 @@ steps:
       - "compute"
       - "instances"
       - "update-container"
-      - "docker-vm-22"
+      - "docker-vm-112"
       - "--zone=europe-west1-c"
       - "--container-image=gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
+
+substitutions:
+  _ENV_WELCOME_MESSAGE: ""
+  _ENV_SLEEP_TIME: ""
+  _ENV_PRODUCTION: ""
 
 images:
   - "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
