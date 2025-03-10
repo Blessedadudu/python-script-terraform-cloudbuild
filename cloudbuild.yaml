@@ -7,8 +7,6 @@ steps:
       - "-t"
       - "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
       - "--build-arg"
-      - "WELCOME_MESSAGE=$$WELCOME_MESSAGE"
-      - "--build-arg"
       - "SLEEP_TIME=$$SLEEP_TIME"
       - "--build-arg"
       - "PRODUCTION=$$PRODUCTION"
