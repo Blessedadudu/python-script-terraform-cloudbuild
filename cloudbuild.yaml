@@ -21,6 +21,7 @@ steps:
           echo "VM does not exist"
           exit 1
         fi
+    allowFailure: true
 
   # Run Terraform only if VM doesn't exist
   - name: "hashicorp/terraform:latest"
@@ -31,7 +32,7 @@ steps:
         terraform init
         terraform apply -auto-approve
     dir: "terraform"
-    allowFailure: true 
+    allowFailure: true
 
   # Update the VM container to use the new image
   - name: "gcr.io/cloud-builders/gcloud"
