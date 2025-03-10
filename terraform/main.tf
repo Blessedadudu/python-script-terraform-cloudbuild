@@ -25,8 +25,9 @@ resource "google_compute_instance" "vm" {
 
   service_account {
     email  = "477570371233-compute@developer.gserviceaccount.com"
-    scopes = ["cloud-platform"]
+    scopes = ["https://www.googleapis.com/auth/logging.write", "https://www.googleapis.com/auth/devstorage.read_only"]
   }
+
 
   scheduling {
     automatic_restart   = true
