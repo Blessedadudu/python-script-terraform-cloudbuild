@@ -11,5 +11,5 @@ def main():
         logging_client.setup_logging()
 
     while True:
-        logging.info("Check if allowed to change! Sleeping for 5 seconds")
+        logging.info("!!!!!Check if allowed to change! Sleeping for 5 seconds")
         time.sleep(5)
