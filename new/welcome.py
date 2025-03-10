@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 # Load environment variables from .env
 load_dotenv()
 
-WELCOME_MESSAGE = os.getenv("WELCOME_MESSAGE", "Trial! Default Welcome Message")
+WELCOME_MESSAGE = os.getenv("WELCOME_MESSAGE", "Change! Default Welcome Message")
 SLEEP_TIME = int(os.getenv("SLEEP_TIME", 5))
 
 def print_welcome():
