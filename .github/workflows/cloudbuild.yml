@@ -1,0 +1,26 @@
+name: Cloud Build CI/CD
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}  # Store your GCP service account JSON key in GitHub Secrets
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Run Cloud Build
+        run: |
+          gcloud builds submit --substitutions=_ENV_WELCOME_MESSAGE="${{ secrets.ENV_WELCOME_MESSAGE }}",_ENV_SLEEP_TIME="${{ secrets.ENV_SLEEP_TIME }}",_ENV_PRODUCTION="${{ secrets.ENV_PRODUCTION }}"
