@@ -10,6 +10,7 @@ variable "vm_name" {
 resource "google_compute_instance" "vm" {
   name         = var.vm_name
   machine_type = "e2-micro"
+  allow_stopping_for_update = true
   zone         = "europe-west1-c"
 
   boot_disk {
@@ -36,13 +37,13 @@ resource "google_compute_instance" "vm" {
 
   metadata = {
     gce-container-declaration = <<EOT
-spec:
-  containers:
-    - name: dockerized-python-app
-      image: gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd
-      stdin: false
-      tty: false
-  restartPolicy: Always
-EOT
+    spec:
+      containers:
+        - name: dockerized-python-app
+          image: gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd
+          stdin: false
+          tty: false
+      restartPolicy: Always
+    EOT
   }
 }
