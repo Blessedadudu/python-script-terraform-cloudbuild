@@ -1,16 +1,28 @@
 steps:
-  # Build the Docker image with environment variables from Cloud Build Trigger
+  # Retrieve secrets from Secret Manager and store them in environment variables
+  - name: "gcr.io/cloud-builders/gcloud"
+    id: "fetch-secrets"
+    entrypoint: "sh"
+    args:
+      - "-c"
+      - |
+        echo "Fetching secrets..."
+        echo "$(gcloud secrets versions access latest --secret=WELCOME_MESSAGE)" > /workspace/WELCOME_MESSAGE
+        echo "$(gcloud secrets versions access latest --secret=SLEEP_TIME)" > /workspace/SLEEP_TIME
+        echo "$(gcloud secrets versions access latest --secret=PRODUCTION)" > /workspace/PRODUCTION
+
+  # Build the Docker image, injecting secrets as build arguments
   - name: "gcr.io/cloud-builders/docker"
     args:
       - "build"
       - "-t"
       - "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
       - "--build-arg"
-      - "WELCOME_MESSAGE=${_ENV_WELCOME_MESSAGE}"
+      - "WELCOME_MESSAGE=$(cat /workspace/WELCOME_MESSAGE)"
       - "--build-arg"
-      - "SLEEP_TIME=${_ENV_SLEEP_TIME}"
+      - "SLEEP_TIME=$(cat /workspace/SLEEP_TIME)"
       - "--build-arg"
-      - "PRODUCTION=${_ENV_PRODUCTION}"
+      - "PRODUCTION=$(cat /workspace/PRODUCTION)"
       - "."
 
   # Push the Docker image to GCR
@@ -53,11 +65,6 @@ steps:
       - "docker-vm-112"
       - "--zone=europe-west1-c"
       - "--container-image=gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"
-
-substitutions:
-  _ENV_WELCOME_MESSAGE: "${_ENV_WELCOME_MESSAGE}"
-  _ENV_SLEEP_TIME: "${_ENV_SLEEP_TIME}"
-  _ENV_PRODUCTION: "${_ENV_PRODUCTION}"
 
 images:
   - "gcr.io/singular-agent-452813-n6/dockerize-python-script-cicd"

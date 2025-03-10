@@ -6,13 +6,10 @@ WORKDIR /app
 COPY requirements.txt requirements.txt
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-# Copy entire project
+# Copy project files
 COPY . .
 
-# Set PYTHONPATH to ensure imports work
-ENV PYTHONPATH=/app
-
-# Set environment variables (these will be overridden by build args)
+# Set environment variables
 ARG WELCOME_MESSAGE
 ARG SLEEP_TIME
 ARG PRODUCTION
