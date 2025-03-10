@@ -15,7 +15,7 @@ resource "google_compute_instance" "vm" {
 
   boot_disk {
     initialize_params {
-      image = "projects/cos-cloud/global/images/family/cos-stable"
+      image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2204-lts"
     }
   }
 
