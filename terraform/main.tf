@@ -3,12 +3,12 @@ provider "google" {
   region  = "europe-west1"
 }
 
-variable "vm_name" {
+variable "name" {
   default = "docker-vm-1111"
 }
 
 resource "google_compute_instance" "vm" {
-  name         = var.vm_name
+  name         = var.name
   machine_type = "e2-micro"
   allow_stopping_for_update = true
   zone         = "europe-west1-c"
